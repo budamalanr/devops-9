@@ -1,0 +1,41 @@
+resource "aws_vpc" "vpc2" {
+    cdir_block = var.vpc2_cidr
+    tags = {
+        Name = var.vpc2_name
+    }
+}
+resource "aws_subnet" "sub2" {
+    vpc_id = aws_vpc.vpc2.id
+    cdir_block = var.sub2_cidr
+    tags = {
+        Name= var.sub2_name
+    }
+}
+resource "aws_internet_gateway" "igw2" {
+    vpc_id = aws_vpc.vpc2.id
+    tags = {
+        Name = var.igw2_name
+    }
+}
+resource "aws_route_table" "rt2" {
+    vpc_id = aws_vpc.vpc2.id
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.igw2.id
+    }
+    tags = {
+        Name = var.rt2_name
+    }
+}
+resource "aws_route_table_association" "rta2" {
+    subnet_id = aws_subnet.sub2.id
+    route_table_id = aws_route_table.rt2.id
+}
+
+
+variable "vpc2_cidr" {}
+variable "vpc2_name" {}
+variable "sub2_cidr" {}
+variable "sub2_name" {}
+variable "igw2_name" {}
+variable "rt2_name" {}      
